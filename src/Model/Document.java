@@ -17,7 +17,13 @@ public class Document {
     }
 
     public void deleteParagraph(int paragraphIndex) {
-        this.paragraphList.remove(paragraphIndex);
+        if(this.isContainsParagraphByIndex(paragraphIndex)) {
+            this.paragraphList.remove(paragraphIndex);
+        }
+    }
+
+    public boolean isContainsParagraphByIndex(int index) {
+        return  0 <= index && index < paragraphList.size();
     }
 
     public List<Paragraph> getParagraphList() {

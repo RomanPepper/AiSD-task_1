@@ -41,6 +41,14 @@ public class Paragraph {
 
             //Отступ слева
             piecesOfText[i] = " ".repeat(textStyleSettings.getLeftIndent()) + piecesOfText[i];
+            int symbolCount = 0;
+            String[] amogus = piecesOfText[i].split(" ");
+            for(int j = 0; i < amogus.length - 1; i++) {
+                symbolCount += amogus[j].length() + 1;
+                if (symbolCount + amogus[j + 1] > 80) {
+                    amogus[j + 1] = " ".repeat(textStyleSettings.getLeftIndent()) + amogus[j + ]
+                }
+            }
 
             //Отступы сверху
             piecesOfText[i] = "\n".repeat(textStyleSettings.getTopIndent()) + piecesOfText[i];
@@ -71,12 +79,26 @@ public class Paragraph {
 
                 for(int j = 0; j < symbolsArray.length; j++) {
                     if (symbolsArray[j].equals("*")) {
-                        symbolsArray[j] = String.valueOf(count) + ". ";
+                        symbolsArray[j] = String.valueOf(count) + ".";
                     }
                 }
 
                 piecesOfText[i] = String.join("", symbolsArray);
             }
         }
+
+        paragraphText = String.join("\n", piecesOfText);
+    }
+
+    public TextStyleSettings getTextStyleSettings() {
+        return textStyleSettings;
+    }
+
+    public String getParagraphText() {
+        return paragraphText;
+    }
+
+    public void setParagraphText(String paragraphText) {
+        this.paragraphText = paragraphText;
     }
 }
