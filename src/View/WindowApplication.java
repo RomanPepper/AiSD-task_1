@@ -42,7 +42,15 @@ public class WindowApplication extends JFrame{
         this.switchParagraph(0);
 
         //Написать логику кнопок "prev", "next"
+        nextParagraphButton.addActionListener(e -> {
+            int currParagraphNum = Integer.parseInt(paragraphNumTextField.getText());
+            this.switchParagraph(currParagraphNum - 1);
+        });
 
+        prevParagraphButton.addActionListener(e -> {
+            int currParagraphNum = Integer.parseInt(paragraphNumTextField.getText());
+            this.switchParagraph((currParagraphNum + 1));
+        });
 
         startFormatButton.addActionListener(e -> {
             int currParagraphNum = Integer.parseInt(paragraphNumTextField.getText());
@@ -75,5 +83,7 @@ public class WindowApplication extends JFrame{
 
     private void switchParagraph(int paragraphIndex) {
         //Написать эту логику
+        //Примечание: должен быть чек на наличие необходимого параграфа
+
     }
 }
