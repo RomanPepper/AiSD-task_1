@@ -38,6 +38,12 @@ public class WindowApplication extends JFrame{
         buttonGroup.add(markedListTypeRadioButton);
         buttonGroup.add(numberedListTypeRadioButton);
 
+        //Изначально выводим первый параграф, созданный при запуске программы
+        this.switchParagraph(0);
+
+        //Написать логику кнопок "prev", "next"
+
+
         startFormatButton.addActionListener(e -> {
             int currParagraphNum = Integer.parseInt(paragraphNumTextField.getText());
             int leftIndent = Integer.parseInt(leftIndentTextField.getText());
@@ -65,5 +71,9 @@ public class WindowApplication extends JFrame{
 
         this.pack();
         this.setVisible(true);
+    }
+
+    private void switchParagraph(int paragraphIndex) {
+        //Написать эту логику
     }
 }

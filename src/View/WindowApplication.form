@@ -233,7 +233,9 @@
                     <preferred-size width="10" height="10"/>
                   </grid>
                 </constraints>
-                <properties/>
+                <properties>
+                  <text value="1"/>
+                </properties>
               </component>
               <component id="fd180" class="javax.swing.JButton" binding="newParagraphButton">
                 <constraints>
