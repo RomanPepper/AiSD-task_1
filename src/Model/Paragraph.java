@@ -1,5 +1,6 @@
 package Model;
 
+
 public class Paragraph {
     private String paragraphText;
     private TextStyleSettings textStyleSettings;
@@ -8,12 +9,6 @@ public class Paragraph {
     public Paragraph() {
         this.paragraphText = "";
         this.textStyleSettings = new TextStyleSettings();
-    }
-
-    //Конструктор параграфа с пользовательскими настройками
-    public Paragraph(String paragraphText, TextStyleSettings textStyleSettings) {
-        this.paragraphText = paragraphText;
-        this.textStyleSettings = textStyleSettings;
     }
 
     public void changeTextStyleSettings(int leftIndent, int rightIndent, int topIndent, int bottomIndent,
@@ -27,65 +22,73 @@ public class Paragraph {
     }
 
     public void formatParagraph(int columnsCount) {
-        String[] piecesOfText = paragraphText.split("\\s*\\n\\s*");
         //Тут очень тупо получается, т.к. по ТЗ необходимо редактировать данные внутри модели (расставлять отступы)
         //на основании данных, получаемых из отображения, а потому с инкапсуляцией проблемы...
+        String[] piecesOfText = paragraphText.split("\\s*\\n\\s*");
 
-        //Обработка отступов и красных строк
         for (int i = 0; i < piecesOfText.length; i++) {
-            //Отступы красной строки
-            piecesOfText[i] = " ".repeat(textStyleSettings.getBreakLineIndent()) + piecesOfText[i];
+            //Заголовки и обычный текст будем обрабатывать отдельно, т.к. стандартные отступы неприменимы к заголовкам
+            if (piecesOfText[i].toUpperCase().equals(piecesOfText[i]) && !piecesOfText[i].equals("")) {
+                //Сначала приведём текст к нормальному виду:
+                piecesOfText[i] = piecesOfText[i].toLowerCase();
+                String firstSymbol = String.valueOf(piecesOfText[i].charAt(0));
+                piecesOfText[i] = piecesOfText[i].replaceFirst(firstSymbol, firstSymbol.toUpperCase());
 
-            //Отступ справа
-            piecesOfText[i] = piecesOfText[i] + " ".repeat(textStyleSettings.getRightIndent());
+                //Центрирование заголовка
+                piecesOfText[i] = "  ".repeat((columnsCount - piecesOfText.length) / 2) + piecesOfText[i] +
+                        "  ".repeat((columnsCount - piecesOfText.length) / 2);
 
-            //Отступ слева
-            piecesOfText[i] = " ".repeat(textStyleSettings.getLeftIndent()) + piecesOfText[i];
-            int symbolCount = 0;
-            String[] amogus = piecesOfText[i].split(" ");
-            for(int j = 0; i < amogus.length - 1; i++) {
-                symbolCount += amogus[j].length() + 1;
-                if (symbolCount + amogus[j + 1] > 80) {
-                    amogus[j + 1] = " ".repeat(textStyleSettings.getLeftIndent()) + amogus[j + ]
+            } else {
+                //Теперь обработка обычного текста
+                //Отступы сверху
+                piecesOfText[i] = "\n".repeat(textStyleSettings.getTopIndent()) + piecesOfText[i];
+
+
+                //Отступы слева
+                boolean breakLineFlag = false;
+                String[] currWordsArray = piecesOfText[i].split("");
+                for(int j = 0; j < piecesOfText[i].length(); j++) {
+                    //Особое условие для обработки первой строки, чтобы избежать проблем с красной строкой
+                    if(j < columnsCount && !breakLineFlag) {
+                        //Добавим отступ красной строки:
+                        currWordsArray[j] = "  ".repeat(textStyleSettings.getBreakLineIndent()) + currWordsArray[j];
+                        breakLineFlag = true;
+                    }
                 }
-            }
 
-            //Отступы сверху
-            piecesOfText[i] = "\n".repeat(textStyleSettings.getTopIndent()) + piecesOfText[i];
 
-            //Отступы снизу
-            piecesOfText[i] = piecesOfText[i] + "\n".repeat(textStyleSettings.getBottomIndent());
 
-        }
+                //Отступы справа
 
-        //Обработка заголовков
-        for (int i = 0; i < piecesOfText.length; i++) {
-            //Если вся строка состоит из больших букв, то это заголовок
-            if (piecesOfText[i].equals(piecesOfText[i].toUpperCase())) {
-                piecesOfText[i] = " ".repeat((80 - piecesOfText.length) / 2) + piecesOfText[i]
-                        + " ".repeat((80 - piecesOfText.length) / 2);
+
+
+                //Отступы cнизу
+                piecesOfText[i] = piecesOfText[i] + "\n".repeat(textStyleSettings.getBottomIndent());
+
             }
         }
 
         //Обработка списков
-        if(textStyleSettings.getListType() == ListType.MARKED) {
-            for (String s : piecesOfText) {
-                s.replaceAll("\\*", "•");
+        switch (textStyleSettings.getListType()) {
+            case MARKED -> {
+                for (int i = 0; i < piecesOfText.length; i++) {
+                    piecesOfText[i] = piecesOfText[i].replaceAll("\\*", "•");
+                }
             }
-        } else {
-            for(int i = 0; i < piecesOfText.length; i++) {
-                int count = 1;
-                String[] symbolsArray = piecesOfText[i].split("");
-
-                for(int j = 0; j < symbolsArray.length; j++) {
-                    if (symbolsArray[j].equals("*")) {
-                        symbolsArray[j] = String.valueOf(count) + ".";
+            case NUMBERED -> {
+                int listElementNumber = 1;
+                for (int i = 0; i < piecesOfText.length; i++) {
+                    if (piecesOfText[i].contains("*")) {
+                        String[] symbolsArray = piecesOfText[i].split("");
+                        if (symbolsArray[0].equals("*")) {
+                            piecesOfText[i] = piecesOfText[i].replaceFirst("\\*", listElementNumber + ". ");
+                            listElementNumber++;
+                        }
                     }
                 }
-
-                piecesOfText[i] = String.join("", symbolsArray);
             }
         }
+
 
         paragraphText = String.join("\n", piecesOfText);
     }

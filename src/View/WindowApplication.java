@@ -118,7 +118,7 @@ public class WindowApplication extends JFrame{
                 markedListTypeRadioButton.setSelected(true);
             }
 
-            System.out.println(newParagraph.getParagraphText());
+            System.out.println("amogus".repeat(0));
             mainTextArea.setText(newParagraph.getParagraphText());
         }
     }
