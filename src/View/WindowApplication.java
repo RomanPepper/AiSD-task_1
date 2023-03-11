@@ -26,15 +26,18 @@ public class WindowApplication extends JFrame{
     private JRadioButton markedListTypeRadioButton;
     private JButton newParagraphButton;
     private JButton deleteParagraphButton;
+    private JTextField rowSizeTextField;
+    private Document document;
 
     public WindowApplication(Document document) throws UnsupportedLookAndFeelException, ClassNotFoundException, InstantiationException, IllegalAccessException {
         this.setName("Bebra-IT-Developer: task 1");
         this.setContentPane(mainPanel);
         this.setPreferredSize(new Dimension(640, 780));
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+        this.document = document;
 
         UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
-        mainTextArea.setColumns(document.getColumnsCount());
+        mainTextArea.setColumns(document.getParagraphList().get(0).getTextStyleSettings().getRowSize());
 
         //RadioButton
         ButtonGroup buttonGroup = new ButtonGroup();
@@ -42,17 +45,17 @@ public class WindowApplication extends JFrame{
         buttonGroup.add(numberedListTypeRadioButton);
 
         //Изначально выводим первый параграф, созданный при запуске программы
-        this.switchParagraph(document, 0);
+        this.switchParagraph( 0);
 
         //Написать логику кнопок "prev", "next"
         nextParagraphButton.addActionListener(e -> {
             int currParagraphNum = Integer.parseInt(paragraphNumTextField.getText());
-            this.switchParagraph(document, currParagraphNum + 1);
+            this.switchParagraph(currParagraphNum + 1);
         });
 
         prevParagraphButton.addActionListener(e -> {
             int currParagraphNum = Integer.parseInt(paragraphNumTextField.getText());
-            this.switchParagraph(document, (currParagraphNum - 1));
+            this.switchParagraph(currParagraphNum - 1);
         });
 
         startFormatButton.addActionListener(e -> {
@@ -63,6 +66,7 @@ public class WindowApplication extends JFrame{
             int topIndent = Integer.parseInt(topIndentTextField.getText());
             int bottomIndent = Integer.parseInt(bottomIndentTextField.getText());
             int breakLineIndent = Integer.parseInt(breakLineIndentTextField.getText());
+            int rowSize = Integer.parseInt(rowSizeTextField.getText());
             String mainText = mainTextArea.getText();
             ListType listType = markedListTypeRadioButton.isSelected() ? ListType.MARKED : ListType.NUMBERED;
 
@@ -74,28 +78,28 @@ public class WindowApplication extends JFrame{
             document.getParagraphList().get(currParagraphNum).setParagraphText(mainText);
 
             //Форматируем текст выбранного параграфа
-            document.getParagraphList().get(currParagraphNum).formatParagraph(document.getColumnsCount());
+            document.getParagraphList().get(currParagraphNum).formatParagraph();
 
             //Обновляем данные
-            switchParagraph(document, currParagraphNum);
+            switchParagraph(currParagraphNum);
         });
 
         newParagraphButton.addActionListener(e -> {
             document.createNewParagraph();
-            switchParagraph(document, document.getParagraphList().size() - 1);
+            switchParagraph(document.getParagraphList().size() - 1);
         });
 
         deleteParagraphButton.addActionListener(e -> {
             int paragraphNumber = Integer.parseInt(paragraphNumTextField.getText());
             document.deleteParagraph(paragraphNumber);
-            switchParagraph(document, document.getParagraphList().size() - 1);
+            switchParagraph(document.getParagraphList().size() - 1);
         });
 
         this.pack();
         this.setVisible(true);
     }
 
-    private void switchParagraph(Document document, int paragraphIndex) {
+    private void switchParagraph(int paragraphIndex) {
         //Написать эту логику
         //Примечание: должен быть чек на наличие необходимого параграфа
         if(document.isContainsParagraphByIndex(paragraphIndex)) {
@@ -109,6 +113,7 @@ public class WindowApplication extends JFrame{
             topIndentTextField.setText(String.valueOf(textStyleSettings.getTopIndent()));
             bottomIndentTextField.setText(String.valueOf(textStyleSettings.getBottomIndent()));
             breakLineIndentTextField.setText(String.valueOf(textStyleSettings.getBreakLineIndent()));
+            rowSizeTextField.setText(String.valueOf(textStyleSettings.getRowSize()));
 
             if(textStyleSettings.getListType() == ListType.NUMBERED) {
                 numberedListTypeRadioButton.setSelected(true);
@@ -118,7 +123,7 @@ public class WindowApplication extends JFrame{
                 markedListTypeRadioButton.setSelected(true);
             }
 
-            System.out.println("amogus".repeat(0));
+//            System.out.println("amogus".repeat(0));
             mainTextArea.setText(newParagraph.getParagraphText());
         }
     }

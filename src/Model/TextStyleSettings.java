@@ -6,26 +6,30 @@ public class TextStyleSettings {
     private int topIndent;
     private int bottomIndent;
     private int breakLineIndent;
+    private int rowSize;
 
     private ListType listType;
 
     //Конструктор по умолчанию
     public TextStyleSettings() {
-        this.leftIndent = 0;
-        this.rightIndent = 0;
+        this.leftIndent = 4;
+        this.rightIndent = 4;
         this.topIndent = 1;
         this.bottomIndent = 0;
         this.breakLineIndent = 4;
+        this.rowSize = 60;
         this.listType = ListType.MARKED;
     }
 
     //Конструктор с пользовательскими настройками
-    public TextStyleSettings(int leftIndent, int rightIndent, int topIndent, int bottomIndent, int breakLineIndent, ListType listType) {
+    public TextStyleSettings(int leftIndent, int rightIndent, int topIndent, int bottomIndent,
+                             int breakLineIndent, int rowSize, ListType listType) {
         this.leftIndent = leftIndent;
         this.rightIndent = rightIndent;
         this.topIndent = topIndent;
         this.bottomIndent = bottomIndent;
         this.breakLineIndent = breakLineIndent;
+        this.rowSize = rowSize;
         this.listType = listType;
     }
 
@@ -75,5 +79,13 @@ public class TextStyleSettings {
 
     public void setListType(ListType listType) {
         this.listType = listType;
+    }
+
+    public int getRowSize() {
+        return rowSize;
+    }
+
+    public void setRowSize(int rowSize) {
+        this.rowSize = rowSize;
     }
 }

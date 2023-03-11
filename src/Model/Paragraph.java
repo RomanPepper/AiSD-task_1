@@ -21,51 +21,54 @@ public class Paragraph {
         textStyleSettings.setListType(listType);
     }
 
-    public void formatParagraph(int columnsCount) {
-        //Тут очень тупо получается, т.к. по ТЗ необходимо редактировать данные внутри модели (расставлять отступы)
-        //на основании данных, получаемых из отображения, а потому с инкапсуляцией проблемы...
-        String[] piecesOfText = paragraphText.split("\\s*\\n\\s*");
+    public void formatParagraph() {
+        String[] piecesOfText = paragraphText.split("\\s*\\n\\s*"); //Массив абзацев текста
 
+        //Обработка текста
         for (int i = 0; i < piecesOfText.length; i++) {
-            //Заголовки и обычный текст будем обрабатывать отдельно, т.к. стандартные отступы неприменимы к заголовкам
-            if (piecesOfText[i].toUpperCase().equals(piecesOfText[i]) && !piecesOfText[i].equals("")) {
-                //Сначала приведём текст к нормальному виду:
-                piecesOfText[i] = piecesOfText[i].toLowerCase();
-                String firstSymbol = String.valueOf(piecesOfText[i].charAt(0));
-                piecesOfText[i] = piecesOfText[i].replaceFirst(firstSymbol, firstSymbol.toUpperCase());
+            //1. Отступы слева и справа
+            //Проверка на однострочность
+            if (piecesOfText[i].length() + textStyleSettings.getLeftIndent()
+                    + textStyleSettings.getRightIndent() <= textStyleSettings.getRowSize()) {
+                piecesOfText[i] = " ".repeat(textStyleSettings.getLeftIndent())
+                        + piecesOfText[i] + " ".repeat(textStyleSettings.getRightIndent());
+            } else { //Если весь абзац с учётом обработки не помещается в одну строку, то...
+                int columnsCount = textStyleSettings.getRowSize();
+                int leftIndent = textStyleSettings.getLeftIndent();
+                int rightIndent = textStyleSettings.getRightIndent();
 
-                //Центрирование заголовка
-                piecesOfText[i] = "  ".repeat((columnsCount - piecesOfText.length) / 2) + piecesOfText[i] +
-                        "  ".repeat((columnsCount - piecesOfText.length) / 2);
+                String[] wordsArray = piecesOfText[i].split("\s+");
+                int lineSymbolsCount = 0;
 
-            } else {
-                //Теперь обработка обычного текста
-                //Отступы сверху
-                piecesOfText[i] = "\n".repeat(textStyleSettings.getTopIndent()) + piecesOfText[i];
+                for(int j = 0; j < wordsArray.length - 1; j++) {
+                    if(j == 0) {
+                        lineSymbolsCount += leftIndent;
+                        wordsArray[j] = " ".repeat(leftIndent) + wordsArray[j];
+                    }
 
-
-                //Отступы слева
-                boolean breakLineFlag = false;
-                String[] currWordsArray = piecesOfText[i].split("");
-                for(int j = 0; j < piecesOfText[i].length(); j++) {
-                    //Особое условие для обработки первой строки, чтобы избежать проблем с красной строкой
-                    if(j < columnsCount && !breakLineFlag) {
-                        //Добавим отступ красной строки:
-                        currWordsArray[j] = "  ".repeat(textStyleSettings.getBreakLineIndent()) + currWordsArray[j];
-                        breakLineFlag = true;
+                    lineSymbolsCount += wordsArray[j].length() + 1; // +1 для учёта пробелов, которыми слова потом слепятся
+                    if(lineSymbolsCount + wordsArray[j + 1].length() + rightIndent > columnsCount) {
+                        wordsArray[j] = wordsArray[j] + "\n";
+                        //Количество пробелов будем уменьшать на 1, чтобы скомпенсировать лишний пробел от склейки строки в конце
+                        wordsArray[j + 1] = " ".repeat(leftIndent - 1) + wordsArray[j + 1];
+                        lineSymbolsCount = leftIndent;
                     }
                 }
 
-
-
-                //Отступы справа
-
-
-
-                //Отступы cнизу
-                piecesOfText[i] = piecesOfText[i] + "\n".repeat(textStyleSettings.getBottomIndent());
-
+                piecesOfText[i] = String.join(" ", wordsArray);
             }
+
+
+            //3. Отступы красной строки
+            piecesOfText[i] = " ".repeat(textStyleSettings.getBreakLineIndent()) + piecesOfText[i];
+
+
+            //4. Отступы сверху
+            piecesOfText[i] = "\n".repeat(textStyleSettings.getTopIndent()) + piecesOfText[i];
+
+            //5. Отступы cнизу
+            piecesOfText[i] = piecesOfText[i] + "\n".repeat(textStyleSettings.getBottomIndent());
+
         }
 
         //Обработка списков
@@ -104,4 +107,5 @@ public class Paragraph {
     public void setParagraphText(String paragraphText) {
         this.paragraphText = paragraphText;
     }
+
 }

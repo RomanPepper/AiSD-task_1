@@ -6,7 +6,6 @@ import java.util.List;
 public class Document {
     List<Paragraph> paragraphList = new ArrayList<>();
 
-    private final int columnsCount = 60;
 
     public Document() {
         this.createNewParagraph();
@@ -28,9 +27,5 @@ public class Document {
 
     public List<Paragraph> getParagraphList() {
         return paragraphList;
-    }
-
-    public int getColumnsCount() {
-        return columnsCount;
     }
 }
