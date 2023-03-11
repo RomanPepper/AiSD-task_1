@@ -11,8 +11,7 @@ public class Paragraph {
         this.textStyleSettings = new TextStyleSettings();
     }
 
-    public void changeTextStyleSettings(int leftIndent, int rightIndent, int topIndent, int bottomIndent,
-                                        int breakLineIndent, ListType listType) {
+    public void changeTextStyleSettings(int leftIndent, int rightIndent, int topIndent, int bottomIndent, int breakLineIndent, ListType listType) {
         textStyleSettings.setLeftIndent(leftIndent);
         textStyleSettings.setRightIndent(rightIndent);
         textStyleSettings.setTopIndent(topIndent);
@@ -28,10 +27,8 @@ public class Paragraph {
         for (int i = 0; i < piecesOfText.length; i++) {
             //1. Отступы слева и справа
             //Проверка на однострочность
-            if (piecesOfText[i].length() + textStyleSettings.getLeftIndent()
-                    + textStyleSettings.getRightIndent() <= textStyleSettings.getRowSize()) {
-                piecesOfText[i] = " ".repeat(textStyleSettings.getLeftIndent())
-                        + piecesOfText[i] + " ".repeat(textStyleSettings.getRightIndent());
+            if (piecesOfText[i].length() + textStyleSettings.getLeftIndent() + textStyleSettings.getRightIndent() <= textStyleSettings.getRowSize()) {
+                piecesOfText[i] = " ".repeat(textStyleSettings.getLeftIndent()) + piecesOfText[i] + " ".repeat(textStyleSettings.getRightIndent());
             } else { //Если весь абзац с учётом обработки не помещается в одну строку, то...
                 int columnsCount = textStyleSettings.getRowSize();
                 int leftIndent = textStyleSettings.getLeftIndent();
@@ -40,14 +37,14 @@ public class Paragraph {
                 String[] wordsArray = piecesOfText[i].split("\s+");
                 int lineSymbolsCount = 0;
 
-                for(int j = 0; j < wordsArray.length - 1; j++) {
-                    if(j == 0) {
+                for (int j = 0; j < wordsArray.length - 1; j++) {
+                    if (j == 0) {
                         lineSymbolsCount += leftIndent;
                         wordsArray[j] = " ".repeat(leftIndent) + wordsArray[j];
                     }
 
                     lineSymbolsCount += wordsArray[j].length() + 1; // +1 для учёта пробелов, которыми слова потом слепятся
-                    if(lineSymbolsCount + wordsArray[j + 1].length() + rightIndent > columnsCount) {
+                    if (lineSymbolsCount + wordsArray[j + 1].length() + rightIndent > columnsCount) {
                         wordsArray[j] = wordsArray[j] + "\n";
                         //Количество пробелов будем уменьшать на 1, чтобы скомпенсировать лишний пробел от склейки строки в конце
                         wordsArray[j + 1] = " ".repeat(leftIndent - 1) + wordsArray[j + 1];
@@ -83,9 +80,17 @@ public class Paragraph {
                 for (int i = 0; i < piecesOfText.length; i++) {
                     if (piecesOfText[i].contains("*")) {
                         String[] symbolsArray = piecesOfText[i].split("");
-                        if (symbolsArray[0].equals("*")) {
-                            piecesOfText[i] = piecesOfText[i].replaceFirst("\\*", listElementNumber + ". ");
-                            listElementNumber++;
+                        boolean isFirstNonSpaceChar = true;
+                        for (String currSymbol : symbolsArray) {
+                            if (currSymbol.equals(" ") || currSymbol.equals("\n")) {
+                                continue;
+                            } else {
+                                if (currSymbol.equals("*") && isFirstNonSpaceChar) {
+                                    piecesOfText[i] = piecesOfText[i].replaceFirst("\\*", listElementNumber + ". ");
+                                    listElementNumber++;
+                                }
+                                isFirstNonSpaceChar = false;
+                            }
                         }
                     }
                 }
