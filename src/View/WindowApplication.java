@@ -30,7 +30,7 @@ public class WindowApplication extends JFrame{
     public WindowApplication(Document document) throws UnsupportedLookAndFeelException, ClassNotFoundException, InstantiationException, IllegalAccessException {
         this.setName("Bebra-IT-Developer: task 1");
         this.setContentPane(mainPanel);
-        this.setPreferredSize(new Dimension(640, 780));
+        this.setPreferredSize(new Dimension(645, 780));
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 
         UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");

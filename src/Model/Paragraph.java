@@ -35,8 +35,8 @@ public class Paragraph {
                 piecesOfText[i] = piecesOfText[i].replaceFirst(firstSymbol, firstSymbol.toUpperCase());
 
                 //Центрирование заголовка
-                piecesOfText[i] = "  ".repeat((columnsCount - piecesOfText.length) / 2) + piecesOfText[i] +
-                        "  ".repeat((columnsCount - piecesOfText.length) / 2);
+                piecesOfText[i] = " ".repeat((columnsCount - piecesOfText.length) / 2) + piecesOfText[i] +
+                        " ".repeat((columnsCount - piecesOfText.length) / 2);
 
             } else {
                 //Теперь обработка обычного текста
@@ -44,17 +44,17 @@ public class Paragraph {
                 piecesOfText[i] = "\n".repeat(textStyleSettings.getTopIndent()) + piecesOfText[i];
 
 
-                //Отступы слева
-                boolean breakLineFlag = false;
-                String[] currWordsArray = piecesOfText[i].split("");
-                for(int j = 0; j < piecesOfText[i].length(); j++) {
-                    //Особое условие для обработки первой строки, чтобы избежать проблем с красной строкой
-                    if(j < columnsCount && !breakLineFlag) {
-                        //Добавим отступ красной строки:
-                        currWordsArray[j] = "  ".repeat(textStyleSettings.getBreakLineIndent()) + currWordsArray[j];
-                        breakLineFlag = true;
-                    }
-                }
+//                //Отступы слева
+//                boolean breakLineFlag = false;
+//                String[] currWordsArray = piecesOfText[i].split("");
+//                for(int j = 0; j < piecesOfText[i].length(); j++) {
+//                    //Особое условие для обработки первой строки, чтобы избежать проблем с красной строкой
+//                    if(j < columnsCount && !breakLineFlag) {
+//                        //Добавим отступ красной строки:
+//                        currWordsArray[j] = "  ".repeat(textStyleSettings.getBreakLineIndent()) + currWordsArray[j];
+//                        breakLineFlag = true;
+//                    }
+//                }
 
 
 
